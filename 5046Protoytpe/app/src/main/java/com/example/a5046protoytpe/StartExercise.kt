@@ -1,5 +1,7 @@
 package com.example.a5046protoytpe
 
+import android.content.Context
+import android.hardware.SensorManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,16 +21,38 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.composable
 
 @Composable
-fun StartExercisePage() {
+fun AppNavigation() {
+    val navController = rememberNavController()
+    val exerciseViewModel: ExerciseViewModel = viewModel()
+    val context = LocalContext.current
+    val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+    NavHost(navController = navController, startDestination = "StartExercise") {
+        composable("StartExercise") { StartExercisePage(navController, exerciseViewModel) }
+        composable("StepCounting") { StepCountingPage(sensorManager) }
+    }
+}
+
+@Composable
+fun StartExercisePage(navController: NavController, exerciseViewModel: ExerciseViewModel) {
+
+    val todayDistance by exerciseViewModel.getTodayTotalDistance().observeAsState(initial = 0.5f)
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -38,7 +62,7 @@ fun StartExercisePage() {
                 .fillMaxWidth()
         ) {
             Text(
-                text = "0.5KM",
+                text = "${todayDistance}KM",
                 style = MaterialTheme.typography.displaySmall.copy(
                     fontWeight = FontWeight.Bold,
                     fontSize = 34.sp
@@ -112,7 +136,7 @@ fun StartExercisePage() {
         }
 
         Button(
-            onClick = { /* TODO: Handle click */ },
+            onClick = { navController.navigate("StepCounting") },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(16.dp)

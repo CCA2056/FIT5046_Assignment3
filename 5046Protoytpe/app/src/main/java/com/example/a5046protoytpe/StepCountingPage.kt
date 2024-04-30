@@ -25,23 +25,18 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import androidx.activity.ComponentActivity
-import androidx.compose.runtime.*
-import androidx.compose.runtime.*
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
+
+
 @Composable
-fun StepCountingPage(sensorManager: SensorManager) {
+fun StepCountingPage(sensorManager: SensorManager, navController: NavController) {
     val context = LocalContext.current
     val exerciseDatabase = remember { ExerciseDatabase.getDatabase(context) }
     val dao = exerciseDatabase.exerciseDAO()
@@ -144,6 +139,7 @@ fun StepCountingPage(sensorManager: SensorManager) {
             )
             Button(
                 onClick = {
+                    navController.navigate("Report")
                     timerRunning = false
                     val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
                     val timeInSeconds = (currentTime / 1000).toInt() // Convert time to seconds

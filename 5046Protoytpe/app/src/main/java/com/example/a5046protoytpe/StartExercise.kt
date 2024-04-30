@@ -2,6 +2,8 @@ package com.example.a5046protoytpe
 
 import android.content.Context
 import android.hardware.SensorManager
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,7 +38,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
+import com.example.a5046prototype.ReportScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
@@ -45,7 +49,8 @@ fun AppNavigation() {
     val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     NavHost(navController = navController, startDestination = "StartExercise") {
         composable("StartExercise") { StartExercisePage(navController, exerciseViewModel) }
-        composable("StepCounting") { StepCountingPage(sensorManager) }
+        composable("StepCounting") { StepCountingPage(sensorManager, navController) }
+        composable("Report") { ReportScreen(exerciseViewModel) }
     }
 }
 

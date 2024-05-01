@@ -50,7 +50,7 @@ fun AppNavigation() {
     NavHost(navController = navController, startDestination = "StartExercise") {
         composable("StartExercise") { StartExercisePage(navController, exerciseViewModel) }
         composable("StepCounting") { StepCountingPage(sensorManager, navController) }
-        composable("Report") { ReportScreen(exerciseViewModel) }
+        composable("Report") { ReportScreen(exerciseViewModel, navController) }
     }
 }
 

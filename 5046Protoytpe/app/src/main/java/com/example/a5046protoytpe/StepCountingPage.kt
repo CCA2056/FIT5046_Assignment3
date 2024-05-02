@@ -54,7 +54,7 @@ fun StepCountingPage(sensorManager: SensorManager, navController: NavController)
             override fun onSensorChanged(event: SensorEvent?) {
                 event?.let {
                     steps++
-                    distance = steps * stepLengthInMeters / 1000 // Convert meters to kilometers
+                    distance = steps * stepLengthInMeters / 1000 // Calculate the estimate walking distance and convert meters to kilometers
                 }
             }
         }
@@ -121,7 +121,9 @@ fun StepCountingPage(sensorManager: SensorManager, navController: NavController)
                     steps++
                     distance = steps * stepLengthInMeters / 1000 // Update distance as if a step was taken
                 },
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFfe703f))
+
             ) {
                 Text("Simulate Step")
             }

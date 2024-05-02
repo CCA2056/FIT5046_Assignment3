@@ -1,7 +1,7 @@
 package com.example.a5046prototype
 
 import android.os.Build
-import android.util.Log
+
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.a5046protoytpe.ExerciseViewModel
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.ui.Alignment
@@ -24,11 +23,8 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.unit.dp
-import kotlin.math.roundToInt
+import androidx.compose.material3.ButtonDefaults
+
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
@@ -49,7 +45,7 @@ fun ReportScreen(exerciseViewModel: ExerciseViewModel, navController: NavControl
     // Filter today's exercises, sum distance and time
     val todayExercises = exercises.filter {
         LocalDate.parse(it.date).isEqual(today)
-    }
+    }.takeLast(5)
 
     val labels = todayExercises.mapIndexed { index, _ -> "Exercise ${index + 1}" }
     val distances = todayExercises.map { it.distance }
@@ -57,7 +53,7 @@ fun ReportScreen(exerciseViewModel: ExerciseViewModel, navController: NavControl
     val barEntries = distances.mapIndexed { index, distance ->
         BarEntry(index.toFloat(), distance)
     }
-    val barDataSet = BarDataSet(barEntries, "Distance in KM")
+    val barDataSet = BarDataSet(barEntries, "Exercise in today")
     barDataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
     val barData = BarData(barDataSet).apply {
         barWidth = 0.9f // Adjust bar width here
@@ -80,7 +76,7 @@ fun ReportScreen(exerciseViewModel: ExerciseViewModel, navController: NavControl
             text = formattedDate,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
@@ -90,7 +86,7 @@ fun ReportScreen(exerciseViewModel: ExerciseViewModel, navController: NavControl
             MetricDisplay("Time", formatTime(totalTimeToday))
             MetricDisplay("Kilometers", "${"%.2f".format(totalDistanceToday)}")
         }
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(40.dp))
         AndroidView(
             modifier = Modifier
                 .fillMaxWidth()
@@ -98,21 +94,25 @@ fun ReportScreen(exerciseViewModel: ExerciseViewModel, navController: NavControl
             factory = { context ->
                 BarChart(context).apply {
                     data = barData
-                    description.text = "Exercise Distances"
-                    xAxis.position = XAxis.XAxisPosition.BOTTOM
-                    xAxis.valueFormatter = IndexAxisValueFormatter(labels)
-                    xAxis.setDrawGridLines(false)
-                    axisLeft.setDrawGridLines(false)
-                    axisRight.setDrawGridLines(false)
+                    description.isEnabled = false
+                    xAxis.apply {
+                        position = XAxis.XAxisPosition.BOTTOM
+                        granularity = 1f // Set granularity to 1 to show one label per index
+                        isGranularityEnabled = true // Enable granularity to enforce one label per unit
+                        valueFormatter = IndexAxisValueFormatter(labels)
+                        setDrawLabels(true) // Ensure labels are drawn
+                        setDrawGridLines(false) // Optionally remove grid lines for clarity
+                    }
+                    axisLeft.apply {
+                        setDrawGridLines(false)
+                        axisMinimum = 0f // Ensure the Y-axis starts at zero
+                    }
+                    axisRight.apply {
+                        setDrawGridLines(false)
+                        axisMinimum = 0f
+                    }
                     setFitBars(true)
                     animateY(500)
-
-                    Log.d("ChartDebug", "Data set: $data") // Debug output
-                    if (data != null && data.dataSetCount > 0) {
-                        Log.d("ChartDebug", "Data loaded correctly")
-                    } else {
-                        Log.d("ChartDebug", "Data is empty")
-                    }
                 }
             },
 
@@ -121,6 +121,14 @@ fun ReportScreen(exerciseViewModel: ExerciseViewModel, navController: NavControl
             update = { chart ->
                 chart.apply {
                     data = barData
+                    xAxis.apply {
+                        position = XAxis.XAxisPosition.BOTTOM
+                        granularity = 1f
+                        isGranularityEnabled = true
+                        valueFormatter = IndexAxisValueFormatter(labels)
+                        setDrawLabels(true)
+                        setDrawGridLines(false)
+                    }
                     invalidate()
                 }
             }
@@ -128,7 +136,9 @@ fun ReportScreen(exerciseViewModel: ExerciseViewModel, navController: NavControl
         Spacer(modifier = Modifier.height(20.dp))
         Button(
             onClick = { navController.navigate("StartExercise") },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFfe703f))
         ) {
             Text("Click to Start New Exercise")
         }

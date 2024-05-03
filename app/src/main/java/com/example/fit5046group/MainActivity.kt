@@ -28,20 +28,20 @@ fun MyApp() {
             color = MaterialTheme.colorScheme.background
         ) {
             //Profile Page
-            ProfilePage()
+            //ProfilePage()
 
             //Edit Profile Page
-            //EditProfilePage()
+            EditProfilePage()
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun ProfilePreview() {
-    MyApp()
-}
-
-/*fun EditProfilePreview() {
+/*fun ProfilePreview() {
     MyApp()
 }*/
+
+fun EditProfilePreview() {
+    MyApp()
+}

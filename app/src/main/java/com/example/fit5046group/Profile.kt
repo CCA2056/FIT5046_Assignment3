@@ -1,5 +1,6 @@
 package com.example.fit5046group
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -24,6 +25,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+
 
 @Composable
 fun ProfilePage() {
@@ -90,7 +93,7 @@ fun ProfilePage() {
                 .padding(horizontal = 16.dp)
         ) {
             Button(
-                onClick = { /* TODO: Handle click */ },
+                onClick = { navController.navigate("")},
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),

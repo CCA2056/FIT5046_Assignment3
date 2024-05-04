@@ -11,8 +11,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -30,6 +35,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.navigation.NavController
 import kotlinx.coroutines.delay
 
@@ -40,6 +48,8 @@ fun EditProfilePage(navController: NavController) {
     var error by remember { mutableStateOf(false) }
     var invalidPassword by remember { mutableStateOf(false) }
     var passwordSaved by remember { mutableStateOf(false) }
+    var isPasswordVisible by remember { mutableStateOf(false) }
+    var isConfirmedPasswordVisible by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()
         .background(color = Color(0xFFFDEEE9)))
@@ -112,10 +122,23 @@ fun EditProfilePage(navController: NavController) {
                     style = MaterialTheme.typography.labelMedium
                 )
             }
+
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("New Password") }
+                label = { Text("New Password") },
+                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(
+                        onClick = { isPasswordVisible = !isPasswordVisible }
+                    ) {
+                        val icon: ImageVector = if (isPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = if (isPasswordVisible) "Hide password" else "Show password"
+                        )
+                    }
+                }
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -127,10 +150,23 @@ fun EditProfilePage(navController: NavController) {
                     style = MaterialTheme.typography.labelMedium
                 )
             }
+
             OutlinedTextField(
                 value = confirmed,
                 onValueChange = { confirmed = it },
-                label = { Text("Confirm Password") }
+                label = { Text("Confirm Password") },
+                visualTransformation = if (isConfirmedPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(
+                        onClick = { isConfirmedPasswordVisible = !isConfirmedPasswordVisible }
+                    ) {
+                        val icon: ImageVector = if (isConfirmedPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = if (isConfirmedPasswordVisible) "Hide password" else "Show password"
+                        )
+                    }
+                }
             )
         }
 

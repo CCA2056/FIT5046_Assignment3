@@ -45,7 +45,8 @@ fun ProfilePage(navController: NavController) {
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
-            onClick = { /* TODO: Handle click */ },
+            onClick = { /* TODO: Handle click to HOME page */
+                navController.navigate("StartExercise")},
             modifier = Modifier
                 .height(48.dp)
                 .clip(CircleShape),
@@ -110,7 +111,8 @@ fun ProfilePage(navController: NavController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { /* TODO: Handle click */ },
+                onClick = { /* TODO: Handle click to Login page */
+                    navController.navigate("Login")},
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),

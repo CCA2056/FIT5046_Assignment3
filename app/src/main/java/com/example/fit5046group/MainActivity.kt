@@ -28,11 +28,6 @@ fun MyApp() {
             color = MaterialTheme.colorScheme.background
         ) {
             AppNavigation()
-            //Profile Page
-            //ProfilePage()
-
-            //Edit Profile Page
-            //EditProfilePage()
         }
     }
 }

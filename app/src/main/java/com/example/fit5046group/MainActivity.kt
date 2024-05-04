@@ -27,11 +27,12 @@ fun MyApp() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
+            AppNavigation()
             //Profile Page
             //ProfilePage()
 
             //Edit Profile Page
-            EditProfilePage()
+            //EditProfilePage()
         }
     }
 }

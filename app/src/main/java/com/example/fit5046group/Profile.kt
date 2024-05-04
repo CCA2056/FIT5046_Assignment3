@@ -26,11 +26,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 
 
 @Composable
-fun ProfilePage() {
-    Box(modifier = Modifier.fillMaxSize()
+fun ProfilePage(navController: NavController) {
+    Box(modifier = Modifier
+        .fillMaxSize()
         .background(color = Color(0xFFFDEEE9))) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -93,7 +97,7 @@ fun ProfilePage() {
                 .padding(horizontal = 16.dp)
         ) {
             Button(
-                onClick = { navController.navigate("")},
+                onClick = { navController.navigate("EditProfile")},
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -118,5 +122,15 @@ fun ProfilePage() {
             Spacer(modifier = Modifier.height(20.dp))
 
         }
+    }
+}
+
+
+@Composable
+fun AppNavigation() {
+    val navController = rememberNavController()
+    NavHost(navController = navController, startDestination = "Profile") {
+        composable("Profile") { ProfilePage(navController) }
+        composable("EditProfile") { EditProfilePage(navController) }
     }
 }

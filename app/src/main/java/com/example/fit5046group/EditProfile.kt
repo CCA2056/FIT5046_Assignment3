@@ -29,9 +29,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.navigation.NavController
 
 @Composable
-fun EditProfilePage() {
+fun EditProfilePage(navController: NavController) {
     var password by remember { mutableStateOf("")}
     var confirmed by remember { mutableStateOf("")}
 
@@ -47,7 +48,7 @@ fun EditProfilePage() {
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
-                onClick = { /* TODO: Handle click */ },
+                onClick = { navController.navigate("Profile") },
                 modifier = Modifier
                     .height(48.dp)
                     .clip(CircleShape),

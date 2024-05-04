@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,11 +31,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
+import kotlinx.coroutines.delay
 
 @Composable
 fun EditProfilePage(navController: NavController) {
     var password by remember { mutableStateOf("")}
     var confirmed by remember { mutableStateOf("")}
+    var error by remember { mutableStateOf(false) }
+    var invalidPassword by remember { mutableStateOf(false) }
+    var passwordSaved by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()
         .background(color = Color(0xFFFDEEE9)))
@@ -135,8 +140,54 @@ fun EditProfilePage(navController: NavController) {
                 .align(Alignment.BottomCenter)
                 .padding(horizontal = 16.dp)
         ) {
+            fun isPasswordValid(password: String): Boolean {
+                val passwordRegex = Regex("^(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=\\S+\$).{8,}\$")
+                return passwordRegex.matches(password)
+            }
+
+            if (error) {
+                Text(
+                    text = "Passwords do not match or empty!",
+                    color = Color.Red,
+                    modifier = Modifier.padding(bottom = 12.dp)
+                )
+            }
+
+            if (invalidPassword) {
+                Text(
+                    text = "Password should have at least 8 characters, including 1 uppercase, 1 number, and 1 special character.",
+                    color = Color.Red,
+                    modifier = Modifier.padding(bottom = 12.dp)
+                )
+            }
+
+            if (passwordSaved) {
+                Text(
+                    text = "New Password Saved :)",
+                    color = Color(0xFFfe703f),
+                    modifier = Modifier.padding(bottom = 12.dp)
+                )
+
+                LaunchedEffect(Unit) {
+                    // Navigate to "Profile" destination after a delay of 2 seconds
+                    delay(2000)
+                    navController.navigate("Profile")
+                }
+            }
+
             Button(
-                onClick = { /* TODO: Handle Click and Error Messages with PWD Validation*/ },
+                onClick = { if (password == confirmed && password.isNotEmpty()) {
+                    if (isPasswordValid(password)) {
+                        // Password and confirmed passwords match, proceed with saving
+                        passwordSaved = true
+                    } else {
+                        // Password provided does not meet validation criteria
+                        invalidPassword = true
+                    }
+                } else {
+                    // Passwords don't match, one of them is empty, or password is invalid, show error messages
+                    error = true
+                } },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -148,6 +199,13 @@ fun EditProfilePage(navController: NavController) {
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            LaunchedEffect(error, passwordSaved, invalidPassword) {
+                // Hide the error message and passwordSaved message after 5.5 seconds
+                delay(5500)
+                error = false
+                passwordSaved = false
+                invalidPassword = false
+            }
         }
     }
 }

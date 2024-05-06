@@ -32,7 +32,7 @@ import androidx.navigation.compose.rememberNavController
 
 
 @Composable
-fun ProfilePage(navController: NavController) {
+fun ProfilePage(navController: NavController, name: String) {
     Box(modifier = Modifier
         .fillMaxSize()
         .background(color = Color(0xFFFDEEE9))) {
@@ -45,8 +45,8 @@ fun ProfilePage(navController: NavController) {
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
-            onClick = { /* TODO: Handle click to HOME page */
-                navController.navigate("StartExercise")},
+            onClick = { /* Handle click to HOME page */
+                navController.navigate("homePage")},
             modifier = Modifier
                 .height(48.dp)
                 .clip(CircleShape),
@@ -85,7 +85,7 @@ fun ProfilePage(navController: NavController) {
             Spacer(modifier = Modifier.height(100.dp))
 
             Text(
-                text = "Linh Nguyen",
+                text = name,
                 style = MaterialTheme.typography.bodyLarge,
                 fontSize = 24.sp
             )
@@ -111,8 +111,8 @@ fun ProfilePage(navController: NavController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { /* TODO: Handle click to Login page */
-                    navController.navigate("Login")},
+                onClick = { /* Handle click to return back to Login page */
+                    navController.navigate("loginScreen")},
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -132,7 +132,7 @@ fun ProfilePage(navController: NavController) {
 fun AppNavigation() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "Profile") {
-        composable("Profile") { ProfilePage(navController) }
+        composable("Profile") { ProfilePage(navController, name = name) }
         composable("EditProfile") { EditProfilePage(navController) }
     }
 }

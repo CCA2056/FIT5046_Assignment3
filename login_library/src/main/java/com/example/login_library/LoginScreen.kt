@@ -1,4 +1,4 @@
-package com.example.a5046prototype
+package com.example.login_library
 
 import LoginViewModel
 import android.content.ContentValues.TAG
@@ -36,14 +36,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.example.a5046protoytpe.R
 import com.google.android.gms.common.api.ApiException
 import androidx.activity.ComponentActivity
-import androidx.compose.material.SnackbarDuration
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.rememberScaffoldState
 
 @Composable
-fun LoginScreen(navController: NavController, isSignedOut: Boolean) {
-
+fun LoginScreen(navController: NavController) {
     val app = LocalContext.current.applicationContext as MyApp
     val viewModel: LoginViewModel = viewModel(factory = ViewModelFactory(app.preferencesHelper))
 
@@ -52,8 +47,6 @@ fun LoginScreen(navController: NavController, isSignedOut: Boolean) {
     var phoneNumber by rememberSaveable { mutableStateOf("") }
     var isUsingPhone by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
-    var isSignedOut by remember { mutableStateOf(false) }
 
     // Firebase Authentication
     val firebaseAuth = FirebaseAuth.getInstance()
@@ -63,6 +56,7 @@ fun LoginScreen(navController: NavController, isSignedOut: Boolean) {
         .requestIdToken("629710888894-i3ng3rv1a46j4aqs4hh80otke34rbbgf.apps.googleusercontent.com")
         .requestEmail()
         .build()
+
 
     // Google Sign-In client
     val googleSignInClient = GoogleSignIn.getClient(LocalContext.current, gso)
@@ -100,22 +94,13 @@ fun LoginScreen(navController: NavController, isSignedOut: Boolean) {
         }
     }
 
+
     // Function to start Google Sign-In
     fun signInWithGoogle() {
         val signInIntent = googleSignInClient.signInIntent
         googleSignInLauncher.launch(signInIntent)
     }
 
-    // Function to sign out from Google account
-    fun signOutFromGoogle() {
-        firebaseAuth.signOut()
-        googleSignInClient.signOut()
-            .addOnCompleteListener {
-                // Handle sign-out completion
-                // Toggle the isSignedOut state to trigger recomposition
-                isSignedOut = true
-            }
-    }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -159,7 +144,30 @@ fun LoginScreen(navController: NavController, isSignedOut: Boolean) {
             }
 
             // Email or Phone Number Input
-            if (!isUsingPhone) {
+            if (isUsingPhone) {
+                OutlinedTextField(
+                    value = phoneNumber,
+                    onValueChange = { phoneNumber = it },
+                    label = { Text("Phone Number") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp)
+                )
+                Spacer(Modifier.height(8.dp))
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            // Implement OTP request logic here
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFF9800)
+                    )
+                ) {
+                    Text("Request OTP", color = Color.White)
+                }
+            } else {
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
@@ -175,25 +183,18 @@ fun LoginScreen(navController: NavController, isSignedOut: Boolean) {
                     label = { Text("Password") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = PasswordVisualTransformation(),
+                    visualTransformation = if (password.isNotEmpty()) PasswordVisualTransformation() else VisualTransformation.None,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     shape = RoundedCornerShape(8.dp)
                 )
                 Spacer(Modifier.height(8.dp))
-                SnackbarHost(hostState = snackbarHostState)
                 Button(
                     onClick = {
                         coroutineScope.launch {
-                            viewModel.loginWithEmail(email, password) { success, errorMessage ->
-                                if (success) {
-                                    navController.navigate("homePage")
-                                } else {
-                                    coroutineScope.launch {
-                                        snackbarHostState.showSnackbar(
-                                            "Incorrect email or password",
-                                            duration = SnackbarDuration.Short
-                                        )
-                                    }
+                            viewModel.loginWithEmail(email, password) { success ->
+                                if (success) navController.navigate("homePage")
+                                else {
+                                    // Handle login error
                                 }
                             }
                         }
@@ -220,9 +221,7 @@ fun LoginScreen(navController: NavController, isSignedOut: Boolean) {
 
             // Google Sign-In
             OutlinedButton(
-                onClick = {
-                    signInWithGoogle()
-                },
+                onClick = { signInWithGoogle() },
                 colors = ButtonDefaults.outlinedButtonColors() // Add the colors you want here
             ) {
                 Icon(
@@ -234,22 +233,6 @@ fun LoginScreen(navController: NavController, isSignedOut: Boolean) {
                 Text("Google Sign in" )
             }
         }
-        // Sign-out button (if user is signed in)
-        if (firebaseAuth.currentUser != null) {
-            Spacer(Modifier.height(8.dp))
-            OutlinedButton(
-                onClick = { signOutFromGoogle() },
-                colors = ButtonDefaults.outlinedButtonColors() // Add the colors you want here
-            ) {
-                Text("Change account? Click here to sign Out")
-            }
-
-        }
-    }
-    // Refresh the screen when isSignedOut changes
-    if (isSignedOut) {
-        // Reset the isSignedOut state to false
-        isSignedOut = false
     }
 }
 
@@ -258,7 +241,6 @@ fun LoginScreen(navController: NavController, isSignedOut: Boolean) {
 fun PreviewLoginScreen() {
     MaterialTheme {
         val navController = rememberNavController()
-        var isSignedOut by remember { mutableStateOf(false) }
-        LoginScreen(navController, isSignedOut)
+        LoginScreen(navController)
     }
 }

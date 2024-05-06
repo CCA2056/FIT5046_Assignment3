@@ -14,9 +14,17 @@ class LoginViewModel(private val prefs: PreferencesHelper) : ViewModel() {
         // Example: set some state or send an API call to request an OTP
     }
 
-    fun loginWithEmail(email: String, password: String, callback: (Boolean) -> Unit) {
+    fun loginWithEmail(email: String, password: String, callback: (Boolean, String?) -> Unit) {
+        if (email.isEmpty() || password.isEmpty()) {
+            callback(false, "Email or password cannot be empty")
+            return
+        }
         val (savedEmail, savedPassword) = prefs.getUser()
-        callback(email == savedEmail && password == savedPassword)
+        if (email == savedEmail && password == savedPassword) {
+            callback(true, null)  // Success, no error message needed.
+        } else {
+            callback(false, "Invalid email or password")  // Optionally handle incorrect inputs.
+        }
     }
 }
 

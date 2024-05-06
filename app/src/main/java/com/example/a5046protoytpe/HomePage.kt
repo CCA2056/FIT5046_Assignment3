@@ -16,14 +16,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
@@ -36,10 +31,9 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDatePickerState
-
-
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -47,12 +41,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(0)
 @Composable
 
-fun HomePage(navController: NavHostController) {
+fun HomePage(navController: NavController) {
     /*Date Picker Section*/
     val calendar = Calendar.getInstance()
     calendar.set(2024, 0, 1) // month (0) is January
@@ -73,9 +70,17 @@ fun HomePage(navController: NavHostController) {
                 },
                 confirmButton = {
                     TextButton(onClick = {
-                        showDatePicker = false
-                        //selectedDateMillis!! null safety because type declared as Long?
                         selectedDate = datePickerState.selectedDateMillis!!
+                        showDatePicker = false
+                        val selectedLocalDate = Instant.ofEpochMilli(selectedDate).atZone(ZoneId.systemDefault()).toLocalDate()
+                        val today = LocalDate.now()
+                        if (selectedLocalDate.isEqual(today)) {
+                            navController.navigate("StartExercise")
+                        }
+                        else {
+                            navController.navigate("Report/${selectedDate}")
+                        }
+
                     }) {Text(text = "OK")
                     }
                 },

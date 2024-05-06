@@ -67,7 +67,7 @@ fun StartExercisePage(navController: NavController, exerciseViewModel: ExerciseV
                 .fillMaxWidth()
         ) {
             Text(
-                text = "${todayDistance}KM",
+                text = String.format("%.2f KM", todayDistance),
                 style = MaterialTheme.typography.displaySmall.copy(
                     fontWeight = FontWeight.Bold,
                     fontSize = 34.sp

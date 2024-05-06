@@ -42,7 +42,9 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.delay
 
 @Composable
-fun EditProfilePage(navController: NavController) {
+fun EditProfilePage(navController: NavController, viewModel: RegisterViewModel) {
+    val userName = remember { viewModel.getUserName()}
+
     var password by remember { mutableStateOf("")}
     var confirmed by remember { mutableStateOf("")}
     var error by remember { mutableStateOf(false) }
@@ -102,7 +104,7 @@ fun EditProfilePage(navController: NavController) {
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(
-                text = "Linh Nguyen",
+                text = userName,
                 style = MaterialTheme.typography.bodyLarge,
                 fontSize = 24.sp
             )

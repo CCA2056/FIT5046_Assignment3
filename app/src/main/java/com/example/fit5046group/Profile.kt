@@ -17,6 +17,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,7 +33,9 @@ import androidx.navigation.compose.rememberNavController
 
 
 @Composable
-fun ProfilePage(navController: NavController, name: String) {
+fun ProfilePage(navController: NavController, viewModel: RegisterViewModel) {
+    val userName = remember { viewModel.getUserName()}
+
     Box(modifier = Modifier
         .fillMaxSize()
         .background(color = Color(0xFFFDEEE9))) {
@@ -85,7 +88,7 @@ fun ProfilePage(navController: NavController, name: String) {
             Spacer(modifier = Modifier.height(100.dp))
 
             Text(
-                text = name,
+                text = userName,
                 style = MaterialTheme.typography.bodyLarge,
                 fontSize = 24.sp
             )
@@ -132,7 +135,7 @@ fun ProfilePage(navController: NavController, name: String) {
 fun AppNavigation() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "Profile") {
-        composable("Profile") { ProfilePage(navController, name = name) }
-        composable("EditProfile") { EditProfilePage(navController) }
+        composable("Profile") { ProfilePage(navController, viewModel = RegisterViewModel) }
+        composable("EditProfile") { EditProfilePage(navController, viewModel = RegisterViewModel) }
     }
 }

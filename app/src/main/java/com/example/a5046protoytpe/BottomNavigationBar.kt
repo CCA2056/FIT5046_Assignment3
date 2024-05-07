@@ -32,6 +32,8 @@ import androidx.navigation.navArgument
 import com.example.a5046prototype.AccountScreen
 import com.example.a5046prototype.LoginScreen
 import com.example.a5046prototype.ReportScreen
+import com.example.fit5046group.EditProfilePage
+import com.example.fit5046group.ProfilePage
 import com.google.firebase.auth.FirebaseAuth
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -104,6 +106,8 @@ fun BottomNavigationBar() {
             composable("homePage") { HomePage(navController, weatherViewModel) }
             composable("StartExercise") { StartExercisePage(navController, exerciseViewModel) }
             composable("StepCounting") { StepCountingPage(sensorManager, navController) }
+            composable("Profile"){ ProfilePage(navController)}
+            composable("EditProfile"){ EditProfilePage(navController)}
             // Ensure that there's only one route for "Report" that takes a date parameter
             composable(
                 route = "Report/{selectedDate}",

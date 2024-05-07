@@ -39,6 +39,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
 import com.example.a5046prototype.ReportScreen
+import com.example.fit5046group.EditProfilePage
+import com.example.fit5046group.ProfilePage
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -52,6 +54,8 @@ fun AppNavigation() {
         composable("StartExercise") { StartExercisePage(navController, exerciseViewModel) }
         composable("StepCounting") { StepCountingPage(sensorManager, navController) }
         composable("Report") { ReportScreen(exerciseViewModel, navController, LocalDate.now()) }
+        composable("Profile"){ ProfilePage(navController) }
+        composable("EditProfile"){ EditProfilePage(navController) }
     }
 }
 

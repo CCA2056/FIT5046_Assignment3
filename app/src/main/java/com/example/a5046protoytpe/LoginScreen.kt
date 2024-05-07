@@ -110,10 +110,27 @@ fun LoginScreen(navController: NavController, isSignedOut: Boolean) {
     fun signOutFromGoogle() {
         firebaseAuth.signOut()
         googleSignInClient.signOut()
-            .addOnCompleteListener {
-                // Handle sign-out completion
-                // Toggle the isSignedOut state to trigger recomposition
-                isSignedOut = true
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // Display a snackbar message on successful sign-out
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(
+                            "You have been successfully logged out.",
+                            duration = SnackbarDuration.Short
+                        )
+                    }
+                    // Handle sign-out completion
+                    // Toggle the isSignedOut state to trigger recomposition
+                    isSignedOut = true
+                } else {
+                    // Optionally handle errors here
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(
+                            "Failed to log out.",
+                            duration = SnackbarDuration.Short
+                        )
+                    }
+                }
             }
     }
 

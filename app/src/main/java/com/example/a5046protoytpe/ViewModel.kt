@@ -41,5 +41,9 @@ class RegisterViewModel(private val prefs: PreferencesHelper) : ViewModel() {
             registerSuccess.value = false
         }
     }
-}
 
+    fun getUserName(): String {
+        val retrievedUserName = prefs.getUserName()
+        return retrievedUserName
+    }
+}

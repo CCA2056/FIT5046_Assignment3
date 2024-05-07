@@ -1,5 +1,6 @@
 package com.example.a5046protoytpe
 
+import RegisterViewModel
 import android.content.Context
 import android.hardware.SensorManager
 import androidx.annotation.RequiresApi
@@ -48,6 +49,7 @@ fun BottomNavigationBar() {
     val context = LocalContext.current
     val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     val weatherViewModel: WeatherViewModel = viewModel()
+    val registerViewModel: RegisterViewModel = viewModel()
     Scaffold(
         bottomBar = {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -114,6 +116,8 @@ fun BottomNavigationBar() {
                 val selectedDate = LocalDate.parse(selectedDateString, DateTimeFormatter.ISO_LOCAL_DATE)
                 ReportScreen(exerciseViewModel, navController, selectedDate)
             }
+            composable("Profile") { ProfilePage(navController, registerViewModel) }
+            composable("EditProfile") { EditProfilePage(navController, registerViewModel) }
         }
     }
 }

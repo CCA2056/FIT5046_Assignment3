@@ -141,11 +141,12 @@ fun StepCountingPage(sensorManager: SensorManager, navController: NavController)
             )
             Button(
                 onClick = {
-                    navController.navigate("Report")
-                    timerRunning = false
                     val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
                     val timeInSeconds = (currentTime / 1000).toInt() // Convert time to seconds
                     val newExercise = Exercise(distance = distance.toFloat(), time = timeInSeconds, date = currentDate)
+                    navController.navigate("Report/$currentDate")
+                    timerRunning = false
+
                     CoroutineScope(Dispatchers.IO).launch {
                         dao.insertExercise(newExercise)
                     }
@@ -166,8 +167,6 @@ fun StepCountingPage(sensorManager: SensorManager, navController: NavController)
             }
 
         }
-
-
     }
 }
 

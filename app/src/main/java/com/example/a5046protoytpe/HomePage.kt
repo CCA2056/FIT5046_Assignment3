@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import java.time.Instant
 import java.util.Calendar
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
@@ -44,12 +45,13 @@ import androidx.navigation.compose.rememberNavController
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(0)
 @Composable
 
-fun HomePage(navController: NavController) {
+fun HomePage(navController: NavController, weatherViewModel: WeatherViewModel) {
     /*Date Picker Section*/
     val calendar = Calendar.getInstance()
     calendar.set(2024, 0, 1) // month (0) is January
@@ -62,6 +64,9 @@ fun HomePage(navController: NavController) {
     var selectedDate by remember {
         mutableStateOf(calendar.timeInMillis)
     }
+    val temperature = weatherViewModel.temperature.value
+    val dateFormatter = DateTimeFormatter.ofPattern("EEEE, dd MMMM")
+    val todayDate = LocalDate.now().format(dateFormatter)
     Column(modifier = Modifier.padding(16.dp)) {
         if (showDatePicker) {
             DatePickerDialog(
@@ -78,7 +83,8 @@ fun HomePage(navController: NavController) {
                             navController.navigate("StartExercise")
                         }
                         else {
-                            navController.navigate("Report/${selectedDate}")
+                            val dateString = selectedLocalDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                            navController.navigate("Report/$dateString")
                         }
 
                     }) {Text(text = "OK")
@@ -109,7 +115,8 @@ fun HomePage(navController: NavController) {
                 .align(Alignment.TopStart)
                 .fillMaxWidth()
                 .padding(start = 16.dp, top = 16.dp) // Adjust padding
-        ) {
+        )
+        {
             Icon(
                 painter = painterResource(id = R.drawable.pf),
                 contentDescription = "Profile Icon",
@@ -119,42 +126,49 @@ fun HomePage(navController: NavController) {
             Spacer(modifier = Modifier.width(16.dp)) // Adjust the spacing
             Column {
                 Text(
-                    text = "Hello Mah",
+                    text = "Hello!",
                 )
                 Text(
-                    text = "Thursday, 08 July",
+                    text = todayDate,
                     color = Color.Gray,
                 )
+                Text(text = "Current Temperature: $temperature")
             }
         }
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.align(Alignment.Center)
-        ){
-            Text(
-                text = "Select a date to check previous exercise record"
-            )
-            Spacer(modifier = Modifier.width(16.dp)) // Adjust the spacing
-            Text(
-                text = "To start exercise, please select the date of today"
-            )
-            Spacer(modifier = Modifier.width(30.dp)) // Adjust the spacing
-            Button(
-                onClick = {
-                    showDatePicker = true
-                },
-                //colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFA500))
-            ) {
-                Text(text = "Start")
+        Box(modifier = Modifier.fillMaxSize().padding(30.dp)){
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.align(Alignment.Center)
+            ){
+                Text(
+                    text = "Select a date to check previous exercise record"
+                )
+                Spacer(modifier = Modifier.width(16.dp)) // Adjust the spacing
+                Text(
+                    text = "To start exercise, please select the date of today"
+                )
+                Spacer(modifier = Modifier.width(20.dp)) // Adjust the spacing
+                Button(
+                    onClick = {
+                        showDatePicker = true
+                    },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFfe703f)), // Set the button color
+                    shape = CircleShape,
+                    modifier = Modifier.size(100.dp)
+                    //colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFA500))
+                ) {
+                    Text(text = "Start", color = Color.White)
+                }
             }
         }
+
     }
 }
 
-@Preview(showBackground = true)
+/*@Preview(showBackground = true)
 @Composable
 fun PreviewHomePage() {
     val navController = rememberNavController()
     HomePage(navController = navController)
-}
+}*/
 

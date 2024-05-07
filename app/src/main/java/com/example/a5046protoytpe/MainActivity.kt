@@ -35,33 +35,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             //MyApp1()
             MaterialTheme {
-                val navController = rememberNavController()
-
-                // Check if the user is already signed in
-                val firebaseAuth = FirebaseAuth.getInstance()
-                val isSignedOut by remember {
-                    mutableStateOf(firebaseAuth.currentUser == null)
-                }
-                val exerciseViewModel: ExerciseViewModel = viewModel()
-                val context = LocalContext.current
-                val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-                NavHost(navController = navController, startDestination = "loginScreen") {
-                    composable("loginScreen") { LoginScreen(navController, isSignedOut) }
-                    composable("accountScreen") { AccountScreen(navController) }
-                    composable("homePage") { HomePage(navController) }
-                    composable("StartExercise") { StartExercisePage(navController, exerciseViewModel) }
-                    composable("StepCounting") { StepCountingPage(sensorManager, navController) }
-                    composable("Report") { ReportScreen(exerciseViewModel, navController, LocalDate.now()) }
-                    composable(
-                        route = "ReportScreen/{selectedDate}",
-                        arguments = listOf(navArgument("selectedDate") { type = NavType.StringType })
-                    ) { backStackEntry ->
-                        // Parse the date from the argument
-                        val selectedDateString = backStackEntry.arguments?.getString("selectedDate") ?: ""
-                        val selectedDate = LocalDate.parse(selectedDateString, DateTimeFormatter.ISO_LOCAL_DATE)
-                        ReportScreen(exerciseViewModel, navController, selectedDate)
-                    }
-                }
+                BottomNavigationBar()
             }
         }
     }

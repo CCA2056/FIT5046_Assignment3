@@ -145,7 +145,7 @@ fun StartExercisePage(navController: NavController, exerciseViewModel: ExerciseV
             onClick = { navController.navigate("StepCounting") },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(16.dp)
+                .padding(bottom = 100.dp, top = 16.dp, start = 16.dp, end = 16.dp)
                 // Replace .fillMaxWidth().height(48.dp) with .size() for a circle
                 .size(100.dp), // Example size, adjust as necessary
             shape = CircleShape, // This makes the button circular

@@ -48,34 +48,34 @@ fun ReportScreen(exerciseViewModel: ExerciseViewModel, navController: NavControl
     val exercises by exerciseViewModel.allExercise.observeAsState(emptyList())
     val today = LocalDate.now()
     val formatter = DateTimeFormatter.ofPattern("EEE, dd MMMM")
-    val formattedDate = today.format(formatter)
-    Log.d(TAG, "Selected date: " + selectedDate.toString())
+    val formattedDate = selectedDate.format(formatter)
+    Log.d(TAG, "Selected date: $formattedDate")
 
-    // Filter today's exercises, sum distance and time
-    val todayExercises = exercises.filter {
-        LocalDate.parse(it.date).isEqual(today)
+    // Filter exercises for the selected date, sum distance and time
+    val selectedDateExercises = exercises.filter {
+        LocalDate.parse(it.date).isEqual(selectedDate)
     }.takeLast(5)
 
-    val labels = todayExercises.mapIndexed { index, _ -> "Exercise ${index + 1}" }
-    val distances = todayExercises.map { it.distance }
+    val labels = selectedDateExercises.mapIndexed { index, _ -> "Exercise ${index + 1}" }
+    val distances = selectedDateExercises.map { it.distance }
 
     val barEntries = distances.mapIndexed { index, distance ->
         BarEntry(index.toFloat(), distance)
     }
-    val barDataSet = BarDataSet(barEntries, "Exercise in today")
+    val barDataSet = BarDataSet(barEntries, "Exercise on $formattedDate")
     barDataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
     val barData = BarData(barDataSet).apply {
         barWidth = 0.9f // Adjust bar width here
     }
 
-    val totalDistanceToday = todayExercises.fold(0f) { sum, exercise -> sum + exercise.distance }
-    val totalTimeToday = todayExercises.fold(0) { sum, exercise -> sum + exercise.time }
-    val caloriesBurned = ((totalTimeToday / 60) * 8.4).roundToInt() // Calories burned per minute calculation
+    val totalDistanceSelectedDate = selectedDateExercises.fold(0f) { sum, exercise -> sum + exercise.distance }
+    val totalTimeSelectedDate = selectedDateExercises.fold(0) { sum, exercise -> sum + exercise.time }
+    val caloriesBurned = ((totalTimeSelectedDate / 60) * 8.4).roundToInt() // Calories burned per minute calculation
 
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 100.dp)
     ) {
         item {
             Box(modifier = Modifier.fillMaxWidth()) {
@@ -90,8 +90,8 @@ fun ReportScreen(exerciseViewModel: ExerciseViewModel, navController: NavControl
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 MetricDisplay("Calories", "$caloriesBurned")
-                MetricDisplay("Time", formatTime(totalTimeToday))
-                MetricDisplay("Kilometers", "${"%.2f".format(totalDistanceToday)}")
+                MetricDisplay("Time", formatTime(totalTimeSelectedDate))
+                MetricDisplay("Kilometers", "${"%.2f".format(totalDistanceSelectedDate)}")
             }
             Spacer(modifier = Modifier.height(40.dp))
             AndroidView(
@@ -140,8 +140,8 @@ fun ReportScreen(exerciseViewModel: ExerciseViewModel, navController: NavControl
             Spacer(modifier = Modifier.height(20.dp))
         }
 
-        items(todayExercises.size) { index ->
-            val exercise = todayExercises[index]
+        items(selectedDateExercises.size) { index ->
+            val exercise = selectedDateExercises[index]
             Card(modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)) {
@@ -157,13 +157,24 @@ fun ReportScreen(exerciseViewModel: ExerciseViewModel, navController: NavControl
 
         item {
             Box(modifier = Modifier.fillMaxWidth()) {
-                Button(
-                    onClick = { navController.navigate("StartExercise") },
-                    modifier = Modifier.align(Alignment.Center),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFfe703f))
-                ) {
-                    Text("Click to Start New Exercise")
+                if (selectedDate.isEqual(today)) {
+                    Button(
+                        onClick = { navController.navigate("StartExercise") },
+                        modifier = Modifier.align(Alignment.Center),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFfe703f))
+                    ) {
+                        Text("Click to Start New Exercise")
+                    }
+                } else {
+                    Button(
+                        onClick = { navController.navigate("homePage") },
+                        modifier = Modifier.align(Alignment.Center),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00ADEF))
+                    ) {
+                        Text("Back to Home Page")
+                    }
                 }
+
             }
         }
     }

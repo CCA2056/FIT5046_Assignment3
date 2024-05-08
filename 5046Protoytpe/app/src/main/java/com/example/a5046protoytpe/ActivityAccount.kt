@@ -125,21 +125,33 @@ fun AccountScreen(navController: NavController) {
                 Spacer(Modifier.height(16.dp))
                 Button(
                     onClick = {
-                        if (agreeTerms) {
-                            if (password != confirmPassword) {
-                                errorMessage = "Passwords do not match"
-                                showError = true
-                            } else {
-                                viewModel.register(name, email, password, confirmPassword, phone)
-                                showError = false
-                            }
-                        } else {
-                            errorMessage = "You must agree to the terms and conditions"
+                        // Reset showError to false to clear previous errors
+                        showError = false
+                        errorMessage = ""
+
+                        // Check for agreement to terms
+                        if (!agreeTerms) {
+                            errorMessage = "You must agree to the terms and conditions."
                             showError = true
+                        }
+                        // Check if any field is empty
+                        else if (name.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank() || phone.isBlank()) {
+                            errorMessage = "Please fill in all fields."
+                            showError = true
+                        }
+                        // Check if passwords match
+                        else if (password != confirmPassword) {
+                            errorMessage = "Passwords do not match."
+                            showError = true
+                        }
+                        // All checks passed, proceed with registration
+                        else {
+                            viewModel.register(name, email, password, confirmPassword, phone)
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
-//                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF9800))
+                    // Optional: Uncomment to apply orange color to the button
+                    // colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF9800))
                 ) {
                     Text("Join us")
                 }
@@ -151,12 +163,13 @@ fun AccountScreen(navController: NavController) {
         }
     )
 
-    LaunchedEffect(showError) {
-        if (showError) {
+    LaunchedEffect(showError, errorMessage) {
+        if (showError && errorMessage.isNotEmpty()) {
             snackbarHostState.showSnackbar(
-                message = "You must agree to the terms and conditions",
+                message = errorMessage,
                 duration = SnackbarDuration.Short
             )
+            // Reset showError to prevent stale state issues
             showError = false
         }
     }

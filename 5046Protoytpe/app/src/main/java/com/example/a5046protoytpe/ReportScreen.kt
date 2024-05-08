@@ -169,7 +169,7 @@ fun ReportScreen(exerciseViewModel: ExerciseViewModel, navController: NavControl
                     Button(
                         onClick = { navController.navigate("homePage") },
                         modifier = Modifier.align(Alignment.Center),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00ADEF))
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF9800))
                     ) {
                         Text("Back to Home Page")
                     }

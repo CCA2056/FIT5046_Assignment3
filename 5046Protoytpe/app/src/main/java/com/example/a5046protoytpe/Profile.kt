@@ -46,18 +46,7 @@ fun ProfilePage(navController: NavController) {
                 .padding(horizontal = 16.dp)
         ){
             Spacer(modifier = Modifier.height(20.dp))
-
-            Button(
-            onClick = { /* Handle click to HOME page */
-                navController.navigate("homePage")},
-            modifier = Modifier
-                .height(48.dp)
-                .clip(CircleShape),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFfe703f)              )
-        ) {
-            Text(text = "<", fontWeight = FontWeight.Bold, color = Color.White)
-        }}
+        }
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

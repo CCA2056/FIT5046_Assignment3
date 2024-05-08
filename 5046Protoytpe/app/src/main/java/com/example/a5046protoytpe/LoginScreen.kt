@@ -58,6 +58,11 @@ fun LoginScreen(navController: NavController, isSignedOut: Boolean) {
     // Firebase Authentication
     val firebaseAuth = FirebaseAuth.getInstance()
 
+    // Check if user is already signed in with Google
+    val isGoogleSignedIn = firebaseAuth.currentUser?.providerData?.any { userInfo ->
+        userInfo.providerId == GoogleAuthProvider.PROVIDER_ID
+    } ?: false
+
     // Google Sign-In options
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestIdToken("629710888894-i3ng3rv1a46j4aqs4hh80otke34rbbgf.apps.googleusercontent.com")
@@ -165,14 +170,6 @@ fun LoginScreen(navController: NavController, isSignedOut: Boolean) {
                     Text("Email", color = Color.White)
                 }
                 Spacer(modifier = Modifier.width(8.dp))
-                Button(
-                    onClick = { isUsingPhone = true },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (isUsingPhone) Color(0xFFFF9800) else Color.LightGray
-                    )
-                ) {
-                    Text("Phone Number", color = Color.White)
-                }
             }
 
             // Email or Phone Number Input
@@ -180,7 +177,7 @@ fun LoginScreen(navController: NavController, isSignedOut: Boolean) {
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
-                    label = { Text("Email Id") },
+                    label = { Text("Enter Your Email") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(8.dp)
@@ -225,43 +222,52 @@ fun LoginScreen(navController: NavController, isSignedOut: Boolean) {
             }
 
             Spacer(Modifier.height(16.dp))
-            TextButton(onClick = {
-                navController.navigate("accountScreen")
-            }) {
-                Text("Create Account")
+            Button(
+                onClick = {
+                    navController.navigate("accountScreen")
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFFF9800) // Orange color like the Sign Out button
+                )
+            ) {
+                Text("Create Account", color = Color.White)
             }
 
             Spacer(Modifier.height(16.dp))
             Divider()
             Spacer(Modifier.height(16.dp))
 
-            // Google Sign-In
-            OutlinedButton(
-                onClick = {
-                    signInWithGoogle()
-                },
-                colors = ButtonDefaults.outlinedButtonColors() // Add the colors you want here
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Lock,
-                    contentDescription = null,
-                    tint = Color.Unspecified // This is to ensure the icon color inherits from the text or specified color
-                )
-                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                Text("Google Sign in" )
+            // Google Sign-In Button Conditionally Displayed
+            if (!isGoogleSignedIn) {
+                OutlinedButton(
+                    onClick = {
+                        signInWithGoogle()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFF9800) // Set the button color to orange
+                    )
+                ) {
+                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                    Text("Google Sign in")
+                }
+            }
+            // Sign-out button (if user is signed in)
+            if (firebaseAuth.currentUser != null) {
+                Button(
+                    onClick = { signOutFromGoogle() },
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(horizontal = 16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFF9800) // Set the button color to orange
+                    )
+                ) {
+                    Text("Click to Sign Out")
+                }
             }
         }
-        // Sign-out button (if user is signed in)
-        if (firebaseAuth.currentUser != null) {
-            Spacer(Modifier.height(8.dp))
-            OutlinedButton(
-                onClick = { signOutFromGoogle() },
-                colors = ButtonDefaults.outlinedButtonColors() // Add the colors you want here
-            ) {
-                Text("Change account? Click here to sign Out")
-            }
 
-        }
     }
     // Refresh the screen when isSignedOut changes
     if (isSignedOut) {

@@ -55,7 +55,7 @@ fun BottomNavigationBar() {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
             // Only show the BottomNavigation if the current route is not the login screen
-            if (currentDestination?.route != "loginScreen" && currentDestination?.route != "accountScreen" ) {
+            if (currentDestination?.route != "loginScreen" && currentDestination?.route != "accountScreen" && currentDestination?.route != "EditProfile") {
                 BottomNavigation(backgroundColor = Color.LightGray) {
                     NavBarItem().NavBarItems().forEach { navItem ->
                         BottomNavigationItem(
@@ -83,15 +83,22 @@ fun BottomNavigationBar() {
                                 it.route == navItem.route
                             } == true,
                             onClick = {
-                                navController.navigate(navItem.route) {
-                                    // Pop up to a given destination before navigating
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
+                                if (navItem.route == Routes.Exercise.value) {
+                                    // Clear all entries on the stack up to the root of the graph when navigating to Exercise
+                                    navController.popBackStack(navController.graph.findStartDestination().id, false)
+                                    navController.navigate(Routes.Exercise.value)
+                                } else {
+                                    // Navigate normally for other items
+                                    navController.navigate(navItem.route) {
+                                        // Pop up to the start destination before navigating
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = false
+                                        }
+                                        // Launch only one instance of the destination
+                                        launchSingleTop = true
+                                        // Do not restore state when navigating to a new screen
+                                        restoreState = false
                                     }
-                                    // Launch only one instance of the destination
-                                    launchSingleTop = true
-                                    // Restore state during navigation
-                                    restoreState = true
                                 }
                             }
                         )
@@ -108,7 +115,6 @@ fun BottomNavigationBar() {
             composable("StepCounting") { StepCountingPage(sensorManager, navController) }
             composable("Profile"){ ProfilePage(navController)}
             composable("EditProfile"){ EditProfilePage(navController)}
-            // Ensure that there's only one route for "Report" that takes a date parameter
             composable(
                 route = "Report/{selectedDate}",
                 arguments = listOf(navArgument("selectedDate") { type = NavType.StringType })

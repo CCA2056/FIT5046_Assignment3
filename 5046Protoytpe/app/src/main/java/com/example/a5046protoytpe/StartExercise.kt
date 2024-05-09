@@ -44,20 +44,7 @@ import com.example.fit5046group.ProfilePage
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun AppNavigation() {
-    val navController = rememberNavController()
-    val exerciseViewModel: ExerciseViewModel = viewModel()
-    val context = LocalContext.current
-    val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-    NavHost(navController = navController, startDestination = "StartExercise") {
-        composable("StartExercise") { StartExercisePage(navController, exerciseViewModel) }
-        composable("StepCounting") { StepCountingPage(sensorManager, navController) }
-        composable("Report") { ReportScreen(exerciseViewModel, navController, LocalDate.now()) }
-        composable("Profile"){ ProfilePage(navController) }
-        composable("EditProfile"){ EditProfilePage(navController) }
-    }
-}
+
 
 @Composable
 fun StartExercisePage(navController: NavController, exerciseViewModel: ExerciseViewModel) {

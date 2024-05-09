@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
@@ -231,7 +232,7 @@ fun EditProfilePage(navController: NavController) {
                 Text(text = "Save", color = Color.White)
             }
 
-            Spacer(modifier = Modifier.height(150.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             LaunchedEffect(error, passwordSaved, invalidPassword) {
                 // Hide the error message and passwordSaved message after 5.5 seconds

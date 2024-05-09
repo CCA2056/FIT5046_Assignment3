@@ -42,20 +42,6 @@ class MainActivity : ComponentActivity() {
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun MyApp1() {
-    MaterialTheme {
-        // Assuming you have a colorScheme and typography set up
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            AppNavigation()
-        }
-    }
-}
-
 
 
 /*@Preview(showBackground = true)

@@ -161,14 +161,6 @@ fun LoginScreen(navController: NavController, isSignedOut: Boolean) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Button(
-                    onClick = { isUsingPhone = false },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (!isUsingPhone) Color(0xFFFF9800) else Color.LightGray
-                    )
-                ) {
-                    Text("Email", color = Color.White)
-                }
                 Spacer(modifier = Modifier.width(8.dp))
             }
 
